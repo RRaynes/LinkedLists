@@ -38,14 +38,37 @@ public class List {
 		return false;
 	}
 	
-	void MergeSort() {
+	//in place merging
+	//have a new list 'c'
+	//have first node point to smallest between the two
+	//.next will point to the next smaller node
+	//O(1) space complexity
+	List merge(List a, List b) {
+		List c = new List();
+		Node iter = c.head;
+		//have pointers a and b that point to first node in each list
+		//move the heads 
+		
+		//if head a is null point to rest of b and vice versa
+		
+		return c;
+	}
+	
+	void insertionSort() {
+		//start at head.next
+		//depending on where this pointer 
+		
+		// 4>   1>   5>     2>
+	}
+	
+	void MergeSort1() {
 		Node mid = getMiddle();
 		List left = this;
 		List right = new List(mid.next);
 		mid.next = null;
 	}
 	
-	List merge(List a, List b) {
+	List merge1(List a, List b) {
 		List c = new List();
 		Node iter1 = a.head;
 		Node iter2 = b.head;
