@@ -24,12 +24,16 @@ public class List {
 
 	public List(Node first) {
 		head = new Node(-1, first);
-		tail = head;
+		tail = first;
 	}
 
 	public List(List list) {
-		Node iter = list.head;
-		// write this method
+		this();
+		Node iter = list.head.next;
+		while (iter != null) {
+			this.append(iter.value);
+			iter = iter.next;
+		}
 	}
 
 	// in place merging
@@ -47,12 +51,56 @@ public class List {
 
 		return c;
 	}
-
+	
 	void insertionSort() {
-		// start at head.next
-		// depending on where this pointer
+		List res = new List();
 
-		// 4> 1> 5> 2>
+		head = head.next; //we start at head.next, this is the current value we are evaluating
+		while (head != null) { //we continue to iterate the head value at the end of the while loop, this also deletes references to save memory
+			Node curr = res.head;
+			while (curr.next != null && head.value > curr.next.value) {
+				curr = curr.next;
+			} //finds the place to insert a new node at in res list
+			Node temp = curr.next; //saves value of next node in the case we arent inserting at the end
+			curr.next = new Node(head.value);
+			if (temp != null) { //checks if we arent inserting at end then uses temp value saved to restore the rest of the list
+				curr.next.next = temp;
+			}
+			head = head.next; //deletion of previous references and updates head
+		}
+		head = res.head; //now the current linked list is empty, but res list is not. to prevent this we change heads reference to res.head
+	}
+
+	void insertionSortWithComments() {
+		List res = new List();
+
+		head = head.next;
+		while (head != null) {
+			Node curr = res.head;
+			if (curr.next != null)
+				//System.out.println("curr.next " + curr.next.value + head.value + " " + (head.value > curr.next.value));
+			while (curr.next != null && head.value > curr.next.value) {
+				//System.out.println("\titerating curr");
+				curr = curr.next;
+			}
+			// System.out.println("inserting at " + curr.value);
+			// find we are inserting
+			Node temp = curr.next;
+			// System.out.println("debug + " + head.value);
+			//System.out.println("inserting at curr value: " + curr.value + " head = " + head.value);
+			
+			System.out.println("printing res ");
+			//res.print();
+			curr.next = new Node(head.value);
+			res.print();
+			if (temp != null) {
+				curr.next.next = temp;
+			}
+			res.print();
+			head = head.next;
+		}
+		// this = res
+		head = res.head;
 	}
 
 	void MergeSort1() {
@@ -99,18 +147,36 @@ public class List {
 
 	// O(n) time complexity
 	// swap in array is O(1)
-	void SwapNodes(int index1, int index2) {
-		Node prev1; Node prev2;
-		prev1 = prev2 = head;
-		Node curr1; Node curr2;
-		curr1 = curr2 = head.next;
-		//while (int i < 0; i < index1)
-		
+	void SwapNodes(int index1, int index2) { // write this method
+		Node prev1;
+		Node prev2;
+		prev1 = prev2 = head; // initialize prev nodes
+		for (int i = 0; i < index1; i++) {
+			prev1 = prev1.next;
+		}
+		Node curr1 = prev1.next; // curr 1 node is just one spot after curr1
+		for (int i = 0; i < index2; i++) {
+			prev2 = prev2.next;
+		}
+		Node curr2 = prev2.next;
+
+		// System.out.println("prev1: " + prev1.value + " prev2: " + prev2.value + "
+		// curr 1: " + curr1.value + " curr 2: " + curr2.value);
+
+		prev1.next = curr2;
+		prev2.next = curr1;
+		Node temp = curr1.next;
+		curr1.next = curr2.next;
+		curr2.next = temp;
 	}
 
 	void delete(int index) {
 		// write this method
-		// for (int i = 0; i < index; )
+		Node iter = head;
+		for (int i = 0; i < index; i++) {
+			iter = iter.next;
+		}
+		iter.next = iter.next.next;
 	}
 
 	void append(int value) {
@@ -138,6 +204,6 @@ public class List {
 			iter = iter.next;
 		}
 		System.out.println();
-			
+
 	}
 }
