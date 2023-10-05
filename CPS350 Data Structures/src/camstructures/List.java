@@ -37,19 +37,23 @@ public class List {
 	}
 
 	// in place merging
-	// have a new list 'c'
-	// have first node point to smallest between the two
-	// .next will point to the next smaller node
-	// O(1) space complexity
-	List merge(List a, List b) {
-		List c = new List();
-		Node iter = c.head;
-		// have pointers a and b that point to first node in each list
-		// move the heads
-
-		// if head a is null point to rest of b and vice versa
-
-		return c;
+	//recursively calls itself to add to the list
+	//both lists the nodes are comprised of must be sorted
+	Node merge(Node a, Node b) {
+		Node res = null;
+		//base cases
+		if (a == null)
+			return b;
+		if (b == null)
+			return a;
+		if (a.value < b.value) { //if value of a less then b, then we return 
+			res = a;
+			res.next = merge(a.next,b);
+		} else {
+			res = b;
+			res.next = merge(a,b.next);
+		}
+		return res;
 	}
 	
 	void insertionSort() {
@@ -71,7 +75,7 @@ public class List {
 		head = res.head; //now the current linked list is empty, but res list is not. to prevent this we change heads reference to res.head
 	}
 
-	void insertionSortWithComments() {
+	void insertionSortWithDebug() {
 		List res = new List();
 
 		head = head.next;
