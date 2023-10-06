@@ -15,16 +15,13 @@ public class List {
 	// dummy element/head references the first node
 
 	Node head;
-	Node tail;
 
 	public List() {
 		head = new Node(-1);
-		tail = head;
 	}
 
 	public List(Node first) {
 		head = new Node(-1, first);
-		tail = first;
 	}
 
 	public List(List list) {
@@ -36,43 +33,89 @@ public class List {
 		}
 	}
 
+	void mergeSort() {
+		Node sorted = mergeSort(head.next);
+		head.next = sorted;
+	}
+
+	/**
+	 * 
+	 * @param l left half of LL w left head (nondummy) as param
+	 * @param r '' but for right half
+	 * @return Node of sorted section to return up the recursive stack
+	 */
+	Node mergeSort(Node start) {
+		if (start.next == null)
+			return start;
+		Node middle = getMiddle(start); // gets middle node within the LL
+		Node rightNode = middle.next; // saves reference of its next node
+		middle.next = null; // deletes reference of middle to seperate to two lists
+		// now we merge each section of the LL
+		Node left = mergeSort(start); // head is the left side of the LL
+		Node right = mergeSort(rightNode);
+//		List h = new List(left);
+//		List h1 = new List(right);
+//		h.print();
+//		h1.print();
+		return merge(left, right);
+	}
+
 	// in place merging
-	//recursively calls itself to add to the list
-	//both lists the nodes are comprised of must be sorted
+	// recursively calls itself to add to the list
+	// both lists the nodes are comprised of must be sorted
 	Node merge(Node a, Node b) {
 		Node res = null;
-		//base cases
+		// base cases
 		if (a == null)
 			return b;
 		if (b == null)
 			return a;
-		if (a.value < b.value) { //if value of a less then b, then we return 
+		if (a.value <= b.value) { // if value of a less= then b, then we return
 			res = a;
-			res.next = merge(a.next,b);
+			res.next = merge(a.next, b);
 		} else {
 			res = b;
-			res.next = merge(a,b.next);
+			res.next = merge(a, b.next);
 		}
+		List dummyL = new List(res);
+		dummyL.print(true);
 		return res;
 	}
-	
-	void insertionSort() {
-		List res = new List();
 
-		head = head.next; //we start at head.next, this is the current value we are evaluating
-		while (head != null) { //we continue to iterate the head value at the end of the while loop, this also deletes references to save memory
-			Node curr = res.head;
+	/**
+	 * fast node updates at twice the speed of slow node therefore when fast is at
+	 * the end, slow will be directly at the middle
+	 * 
+	 * @return the node that is directly in the middle
+	 */
+	Node getMiddle(Node head) {
+		Node slow = head;
+		Node fast = head;
+		while (fast.next != null && fast.next.next != null) {
+			fast = fast.next.next;
+			slow = slow.next;
+		}
+		return slow;
+	}
+
+	void insertionSort() {
+		Node res = new Node(-1);
+
+		head = head.next; // we start at head.next, this is the current value we are evaluating
+		while (head != null) { // we continue to iterate the head value at the end of the while loop, this also
+								// deletes references to save memory
+			Node curr = res;
 			while (curr.next != null && head.value > curr.next.value) {
 				curr = curr.next;
-			} //finds the place to insert a new node at in res list
-			Node temp = curr.next; //saves value of next node in the case we arent inserting at the end
+			} // finds the place to insert a new node at in res list
+			Node temp = curr.next; // saves value of next node in the case we arent inserting at the end
 			curr.next = new Node(head.value);
-			if (temp != null) { //checks if we arent inserting at end then uses temp value saved to restore the rest of the list
-				curr.next.next = temp;
-			}
-			head = head.next; //deletion of previous references and updates head
+			curr.next.next = temp;
+			
+			head = head.next; // deletion of previous references and updates head
 		}
-		head = res.head; //now the current linked list is empty, but res list is not. to prevent this we change heads reference to res.head
+		head = res; // now the current linked list is empty, but res list is not. to prevent this we
+							// change heads reference to res.head
 	}
 
 	void insertionSortWithDebug() {
@@ -82,36 +125,31 @@ public class List {
 		while (head != null) {
 			Node curr = res.head;
 			if (curr.next != null)
-				//System.out.println("curr.next " + curr.next.value + head.value + " " + (head.value > curr.next.value));
-			while (curr.next != null && head.value > curr.next.value) {
-				//System.out.println("\titerating curr");
-				curr = curr.next;
-			}
+				// System.out.println("curr.next " + curr.next.value + head.value + " " +
+				// (head.value > curr.next.value));
+				while (curr.next != null && head.value > curr.next.value) {
+					// System.out.println("\titerating curr");
+					curr = curr.next;
+				}
 			// System.out.println("inserting at " + curr.value);
 			// find we are inserting
 			Node temp = curr.next;
 			// System.out.println("debug + " + head.value);
-			//System.out.println("inserting at curr value: " + curr.value + " head = " + head.value);
-			
+			// System.out.println("inserting at curr value: " + curr.value + " head = " +
+			// head.value);
+
 			System.out.println("printing res ");
-			//res.print();
+			// res.print();
 			curr.next = new Node(head.value);
-			res.print();
+			res.print(false);
 			if (temp != null) {
 				curr.next.next = temp;
 			}
-			res.print();
+			res.print(false);
 			head = head.next;
 		}
 		// this = res
 		head = res.head;
-	}
-
-	void MergeSort1() {
-		Node mid = getMiddle();
-		List left = this;
-		List right = new List(mid.next);
-		mid.next = null;
 	}
 
 	List merge1(List a, List b) {
@@ -131,22 +169,6 @@ public class List {
 		}
 
 		return null; // write rest of method
-	}
-
-	/**
-	 * fast node updates at twice the speed of slow node therefore when fast is at
-	 * the end, slow will be directly at the middle
-	 * 
-	 * @return the node that is directly in the middle
-	 */
-	Node getMiddle() {
-		Node slow = head;
-		Node fast = head;
-		while (fast.next != null && fast.next.next != null) {
-			fast = fast.next.next;
-			slow = slow.next;
-		}
-		return slow;
 	}
 
 	// O(n) time complexity
@@ -185,8 +207,9 @@ public class List {
 
 	void append(int value) {
 		Node curr = new Node(value);
-		tail.next = curr;
-		tail = curr;
+		Node temp = head.next;
+		head.next = curr;
+		curr.next = temp;
 	}
 
 	boolean insert(int value, int index) { // time complexity O(n) - array insert time complexity O(n)
@@ -201,8 +224,10 @@ public class List {
 		return true;
 	}
 
-	void print() {
-		Node iter = new Node(head.next);
+	void print(boolean dummyHead) { // if dummyhead true then print next node
+		Node iter = new Node(head);
+		if (dummyHead)
+			iter = iter.next;
 		while (iter != null) {
 			System.out.print(iter.value + " > ");
 			iter = iter.next;
